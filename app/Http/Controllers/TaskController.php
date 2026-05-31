@@ -89,7 +89,13 @@ class TaskController extends Controller
     private function initializeDatabase()
     {
         try {
-            $db_path = '/tmp/database.sqlite';
+            // Use storage directory which persists on Vercel
+            $storage_path = storage_path('app');
+            if (!is_dir($storage_path)) {
+                mkdir($storage_path, 0755, true);
+            }
+            
+            $db_path = storage_path('app/database.sqlite');
             
             // Create database if it doesn't exist
             if (!file_exists($db_path)) {
@@ -132,7 +138,7 @@ class TaskController extends Controller
                 ");
             }
         } catch (\Exception $e) {
-            // Log but don't fail - database might already be initialized
+            // Log but don't fail
             \Log::debug('Database init: ' . $e->getMessage());
         }
     }
