@@ -89,10 +89,8 @@ class TaskController extends Controller
     private function initializeDatabase()
     {
         try {
-            // Use absolute path that works on both local and Vercel
-            // Local: database/database.sqlite
-            // Vercel: /var/task/user/storage/app/database.sqlite
-            $db_path = env('DB_DATABASE');
+            // Get database path from config - works on both local and Vercel
+            $db_path = config('database.connections.sqlite.database');
             
             // Ensure directory exists
             $db_dir = dirname($db_path);
@@ -142,7 +140,7 @@ class TaskController extends Controller
             }
         } catch (\Exception $e) {
             // Log but don't fail
-            \Log::debug('Database init: ' . $e->getMessage());
+            error_log('Database init: ' . $e->getMessage());
         }
     }
 }
