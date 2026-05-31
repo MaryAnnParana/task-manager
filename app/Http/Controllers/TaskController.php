@@ -89,13 +89,16 @@ class TaskController extends Controller
     private function initializeDatabase()
     {
         try {
-            // Use storage directory which persists on Vercel
-            $storage_path = storage_path('app');
-            if (!is_dir($storage_path)) {
-                mkdir($storage_path, 0755, true);
-            }
+            // Use absolute path that works on both local and Vercel
+            // Local: database/database.sqlite
+            // Vercel: /var/task/user/storage/app/database.sqlite
+            $db_path = env('DB_DATABASE');
             
-            $db_path = storage_path('app/database.sqlite');
+            // Ensure directory exists
+            $db_dir = dirname($db_path);
+            if (!is_dir($db_dir)) {
+                @mkdir($db_dir, 0755, true);
+            }
             
             // Create database if it doesn't exist
             if (!file_exists($db_path)) {
