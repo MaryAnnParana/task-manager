@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && php artisan optimize",
-  "outputDirectory": "public",
-  "env": {
-    "APP_ENV": "production",
-    "APP_DEBUG": "false"
-  },
   "functions": {
     "api/**/*.php": {
       "runtime": "vercel-php@0.9.0"
@@ -13,12 +7,17 @@
   },
   "routes": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "src": "/(.+)",
+      "dest": "/api/index.php"
     },
     {
-      "src": "/(.*)",
+      "src": "/",
       "dest": "/api/index.php"
     }
-  ]
+  ],
+  "buildCommand": "npm run build && php artisan optimize:clear",
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false"
+  }
 }
