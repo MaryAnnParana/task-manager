@@ -18,6 +18,11 @@
   "buildCommand": "npm run build",
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "false"
+    "APP_DEBUG": "false",
+    "APP_KEY": "base64:pNJsNbVwdUR7gU4hZM3s0ijxBBk814cAGpJEzpQPatQ=",
+    "DB_CONNECTION": "sqlite",
+    "DB_DATABASE": "/tmp/database.sqlite",
+    "CACHE_STORE": "file",
+    "QUEUE_CONNECTION": "sync"
   }
 }
