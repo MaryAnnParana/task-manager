@@ -11,6 +11,9 @@ class TaskController extends Controller
     // 1. Dashboard Workspace (Index View) [cite: 17]
     public function index(Request $request)
     {
+        // Initialize database tables if they don't exist
+        $this->initializeDatabase();
+        
         // Fetch all categories for our creation dropdown form [cite: 18, 20]
         $categories = Category::all();
 
@@ -80,5 +83,57 @@ class TaskController extends Controller
         $task->delete(); // Permanently remove [cite: 22]
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted permanently!');
+    }
+
+    // Initialize database tables on first request (for Vercel deployment)
+    private function initializeDatabase()
+    {
+        try {
+            $db_path = '/tmp/database.sqlite';
+            
+            // Create database if it doesn't exist
+            if (!file_exists($db_path)) {
+                $pdo = new \PDO("sqlite:$db_path");
+                $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+                $pdo->exec('PRAGMA foreign_keys = ON;');
+                
+                // Create categories table
+                $pdo->exec('
+                    CREATE TABLE IF NOT EXISTS categories (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name VARCHAR(255) NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                ');
+                
+                // Create tasks table
+                $pdo->exec('
+                    CREATE TABLE IF NOT EXISTS tasks (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        category_id INTEGER NOT NULL,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        due_date DATE,
+                        completed BOOLEAN DEFAULT 0,
+                        status VARCHAR(50) DEFAULT "Pending",
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
+                    )
+                ');
+                
+                // Seed categories
+                $pdo->exec("
+                    INSERT OR IGNORE INTO categories (id, name) VALUES
+                    (1, 'Work'),
+                    (2, 'Personal'),
+                    (3, 'Study')
+                ");
+            }
+        } catch (\Exception $e) {
+            // Log but don't fail - database might already be initialized
+            \Log::debug('Database init: ' . $e->getMessage());
+        }
     }
 }
