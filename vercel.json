@@ -2,7 +2,6 @@
   "version": 2,
   "buildCommand": "npm run build && php artisan optimize",
   "outputDirectory": "public",
-  "framework": "laravel",
   "env": {
     "APP_ENV": "production",
     "APP_DEBUG": "false"
