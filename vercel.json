@@ -1,25 +1,3 @@
 {
-  "version": 2,
-  "outputDirectory": "public",
-  "functions": {
-    "api/**/*.php": {
-      "runtime": "vercel-php@0.9.0"
-    }
-  },
-  "routes": [
-    {
-      "src": "/(.*)$",
-      "dest": "/api/index.php"
-    }
-  ],
-  "buildCommand": "npm run build",
-  "env": {
-    "APP_ENV": "production",
-    "APP_DEBUG": "false",
-    "APP_KEY": "base64:pNJsNbVwdUR7gU4hZM3s0ijxBBk814cAGpJEzpQPatQ=",
-    "DB_CONNECTION": "sqlite",
-    "DB_DATABASE": "/var/task/user/storage/app/database.sqlite",
-    "CACHE_STORE": "file",
-    "QUEUE_CONNECTION": "sync"
-  }
+  "version": 2
 }
